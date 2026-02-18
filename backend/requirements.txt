@@ -1,9 +1,10 @@
 fastapi==0.110.0
 uvicorn==0.27.1
-tensorflow-cpu==2.13.0
+tensorflow==2.10.0
 numpy==1.24.3
 pillow==10.2.0
 python-multipart==0.0.9
+
 
 # local{train+eval}
 # fastapi==0.110.0
