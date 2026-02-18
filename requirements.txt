@@ -5,7 +5,8 @@ pillow==10.2.0
 python-multipart==0.0.9
 
 # 🔥 Lightweight ML
-tflite-runtime==2.10.0
+tflite-runtime==2.14.0
+
 
 # 🔥 XAI (keep minimal)
 lime==0.2.0.1
