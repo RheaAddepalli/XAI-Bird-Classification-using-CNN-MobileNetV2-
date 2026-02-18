@@ -34,7 +34,13 @@ def serve_frontend():
 # ==============================
 # LOAD MODEL (FAST LOAD)
 # ==============================
-model = tf.keras.models.load_model("bird_model.keras", compile=False)
+import os
+
+BASE_DIR = os.path.dirname(os.path.abspath(__file__))
+model_path = os.path.join(BASE_DIR, "bird_model.keras")
+
+model = tf.keras.models.load_model(model_path, compile=False)
+
 
 with open("class_names.json") as f:
     class_names = json.load(f)
