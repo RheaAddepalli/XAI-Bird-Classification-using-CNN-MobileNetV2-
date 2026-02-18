@@ -17,3 +17,6 @@ backend/test/
 # OS
 .DS_Store
 Thumbs.db
+frontend/dist/
+backend/train_model.py
+backend/eval_model.py
