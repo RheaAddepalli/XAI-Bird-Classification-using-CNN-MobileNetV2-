@@ -37,7 +37,8 @@ def serve_frontend():
 # ==============================
 BASE_DIR = os.path.dirname(os.path.abspath(__file__))
 
-model_path = os.path.join(BASE_DIR, "bird_model.keras")
+model_path = os.path.join(BASE_DIR, "bird_model.h5")
+
 class_path = os.path.join(BASE_DIR, "class_names.json")
 
 model = tf.keras.models.load_model(model_path, compile=False)
