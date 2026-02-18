@@ -24,42 +24,22 @@ app.add_middleware(
 )
 
 # ==============================
-# SERVE ANGULAR STATIC FILES 🔥
+# SERVE ANGULAR STATIC FILES ✅ FIXED
 # ==============================
-# app.mount("/static", StaticFiles(directory="static"), name="static")
-
-# @app.get("/")
-# def serve_frontend():
-#     return FileResponse("static/index.html")
-# ==============================
-# SERVE ANGULAR STATIC FILES 🔥
-# ==============================
-from fastapi.staticfiles import StaticFiles
-from fastapi.responses import FileResponse
-import os
-
 BASE_DIR = os.path.dirname(os.path.abspath(__file__))
 STATIC_DIR = os.path.join(BASE_DIR, "static")
 
 app.mount("/static", StaticFiles(directory=STATIC_DIR), name="static")
 
-# 🔥 THIS IS THE FIX
-@app.get("/{full_path:path}")
-def serve_react_app(full_path: str):
-    file_path = os.path.join(STATIC_DIR, full_path)
-
-    if os.path.exists(file_path):
-        return FileResponse(file_path)
-
+# ✅ FIX: ONLY ROOT SERVES INDEX.HTML
+@app.get("/")
+def serve_frontend():
     return FileResponse(os.path.join(STATIC_DIR, "index.html"))
 
 # ==============================
 # LOAD MODEL (FIXED PATH ✅)
 # ==============================
-BASE_DIR = os.path.dirname(os.path.abspath(__file__))
-
 model_path = os.path.join(BASE_DIR, "bird_model.h5")
-
 class_path = os.path.join(BASE_DIR, "class_names.json")
 
 model = tf.keras.models.load_model(model_path, compile=False)
