@@ -1,5 +1,4 @@
 export const environment = {
   production: true,
-  apiUrl: ''
-
+  apiUrl: 'https://xai-bird-classification-using-cnn.onrender.com'
 };
