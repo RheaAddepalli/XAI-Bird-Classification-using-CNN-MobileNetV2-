@@ -8,6 +8,7 @@ import tensorflow as tf
 from PIL import Image, UnidentifiedImageError
 import io
 import json
+import os
 
 # ==============================
 # APP INIT
@@ -32,17 +33,16 @@ def serve_frontend():
     return FileResponse("static/index.html")
 
 # ==============================
-# LOAD MODEL (FAST LOAD)
+# LOAD MODEL (FIXED PATH ✅)
 # ==============================
-import os
-
 BASE_DIR = os.path.dirname(os.path.abspath(__file__))
+
 model_path = os.path.join(BASE_DIR, "bird_model.keras")
+class_path = os.path.join(BASE_DIR, "class_names.json")
 
 model = tf.keras.models.load_model(model_path, compile=False)
 
-
-with open("class_names.json") as f:
+with open(class_path) as f:
     class_names = json.load(f)
 
 class_names = {v: k for k, v in class_names.items()}
@@ -177,11 +177,6 @@ async def explain(file: UploadFile = File(...)):
 
     except Exception as e:
         return {"error": str(e)}
-
-
-
-
-
 
 
 
