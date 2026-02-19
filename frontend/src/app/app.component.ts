@@ -89,38 +89,84 @@ export class AppComponent {
   }
 
   // 📌 Convert IG → heatmap image
+//   generateHeatmap(igMap: number[][][]) {
+//     const canvas = document.createElement('canvas');
+//     const ctx = canvas.getContext('2d')!;
+
+//     const size = 224;
+//     canvas.width = size;
+//     canvas.height = size;
+
+//     const imageData = ctx.createImageData(size, size);
+
+//     for (let i = 0; i < size; i++) {
+//       for (let j = 0; j < size; j++) {
+//         const pixel = igMap[i][j];
+
+//         const value = Math.floor(pixel[0] * 255);
+
+//         const index = (i * size + j) * 4;
+
+//         imageData.data[index] = value;     // R
+//         imageData.data[index + 1] = 0;
+//         imageData.data[index + 2] = 0;
+//         imageData.data[index + 3] = 255;
+//       }
+//     }
+
+//     ctx.putImageData(imageData, 0, 0);
+//     this.heatmapUrl = canvas.toDataURL();
+//   }
+// }
+
+
   generateHeatmap(igMap: number[][][]) {
-    const canvas = document.createElement('canvas');
-    const ctx = canvas.getContext('2d')!;
+  const canvas = document.createElement('canvas');
+  const ctx = canvas.getContext('2d')!;
 
-    const size = 224;
-    canvas.width = size;
-    canvas.height = size;
+  const size = 224;
+  canvas.width = size;
+  canvas.height = size;
 
-    const imageData = ctx.createImageData(size, size);
+  const imageData = ctx.createImageData(size, size);
 
-    for (let i = 0; i < size; i++) {
-      for (let j = 0; j < size; j++) {
-        const pixel = igMap[i][j];
+  // 🔥 Step 1: find min & max
+  let min = Infinity;
+  let max = -Infinity;
 
-        const value = Math.floor(pixel[0] * 255);
-
-        const index = (i * size + j) * 4;
-
-        imageData.data[index] = value;     // R
-        imageData.data[index + 1] = 0;
-        imageData.data[index + 2] = 0;
-        imageData.data[index + 3] = 255;
-      }
+  for (let i = 0; i < size; i++) {
+    for (let j = 0; j < size; j++) {
+      const val = igMap[i][j][0];
+      if (val < min) min = val;
+      if (val > max) max = val;
     }
-
-    ctx.putImageData(imageData, 0, 0);
-    this.heatmapUrl = canvas.toDataURL();
   }
+
+  const range = max - min || 1;
+
+  // 🔥 Step 2: normalize + color map
+  for (let i = 0; i < size; i++) {
+    for (let j = 0; j < size; j++) {
+      const raw = igMap[i][j][0];
+
+      // normalize 0–1
+      const norm = (raw - min) / range;
+
+      const value = Math.floor(norm * 255);
+
+      const index = (i * size + j) * 4;
+
+      imageData.data[index] = value;       // R
+      imageData.data[index + 1] = 0;       // G
+      imageData.data[index + 2] = 255 - value; // B (🔥 makes gradient!)
+      imageData.data[index + 3] = 255;
+    }
+  }
+
+  ctx.putImageData(imageData, 0, 0);
+  this.heatmapUrl = canvas.toDataURL();
 }
-
-
-
+}
 
 
 
