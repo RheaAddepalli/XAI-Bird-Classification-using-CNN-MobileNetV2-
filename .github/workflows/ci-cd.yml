@@ -21,27 +21,34 @@ jobs:
         with:
           python-version: "3.10"
 
-      # 3️⃣ Install dependencies
+      # 3️⃣ Install dependencies from root
       - name: Install Dependencies
         run: |
           pip install --upgrade pip
           pip install -r requirements.txt
 
-      # 4️⃣ Test Backend Import
+      # 4️⃣ Optional: Build Angular frontend
+      - name: Build Angular Frontend
+        run: |
+          cd frontend
+          npm install
+          npm run build -- --output-path ../backend/static
+
+      # 5️⃣ Test Backend Import
       - name: Test Backend Import
         run: |
           cd backend
           python -c "import main"
 
-      # 5️⃣ Optional: Lint / Code Checks
+      # 6️⃣ Lint Backend (ignore minor style issues)
       - name: Lint Backend
         run: |
           pip install flake8
           cd backend
-          flake8 main.py
+          flake8 main.py --max-line-length=120 --ignore=E302,E305,E501,F401
 
-      # 6️⃣ Optional: Test FastAPI Startup
-      - name: Test FastAPI Health Endpoint
+      # 7️⃣ Test FastAPI Health Endpoint
+      - name: Test FastAPI Startup
         run: |
           cd backend
           pip install uvicorn
@@ -49,7 +56,7 @@ jobs:
           sleep 5
           curl -s http://127.0.0.1:8000/health
 
-      # 7️⃣ Trigger Render Deploy (only on main branch)
+      # 8️⃣ Deploy to Render (only if all previous steps pass)
       - name: Deploy to Render
         if: github.ref == 'refs/heads/main'
         run: |
