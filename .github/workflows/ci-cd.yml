@@ -22,9 +22,8 @@ jobs:
           python-version: "3.10"
 
       # 3️⃣ Install dependencies
-      - name: Install Backend Dependencies
+      - name: Install Dependencies
         run: |
-          cd backend
           pip install --upgrade pip
           pip install -r requirements.txt
 
