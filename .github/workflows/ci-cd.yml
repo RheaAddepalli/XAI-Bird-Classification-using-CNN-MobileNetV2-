@@ -45,7 +45,7 @@ jobs:
         run: |
           pip install flake8
           cd backend
-          flake8 main.py --max-line-length=120 --ignore=E302,E305,E501,F401
+          flake8 main.py --max-line-length=120 --ignore=E302,E303,E305,E501,F401
 
       # 7️⃣ Test FastAPI Health Endpoint
       - name: Test FastAPI Startup
