@@ -1,0 +1,57 @@
+name: Bird Classifier CI/CD
+
+on:
+  push:
+    branches: [ "main" ]
+  pull_request:
+    branches: [ "main" ]
+
+jobs:
+  build-and-test:
+    runs-on: ubuntu-latest
+
+    steps:
+      # 1️⃣ Checkout code
+      - name: Checkout Code
+        uses: actions/checkout@v4
+
+      # 2️⃣ Set up Python
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: "3.10"
+
+      # 3️⃣ Install dependencies
+      - name: Install Backend Dependencies
+        run: |
+          cd backend
+          pip install --upgrade pip
+          pip install -r requirements.txt
+
+      # 4️⃣ Test Backend Import
+      - name: Test Backend Import
+        run: |
+          cd backend
+          python -c "import main"
+
+      # 5️⃣ Optional: Lint / Code Checks
+      - name: Lint Backend
+        run: |
+          pip install flake8
+          cd backend
+          flake8 main.py
+
+      # 6️⃣ Optional: Test FastAPI Startup
+      - name: Test FastAPI Health Endpoint
+        run: |
+          cd backend
+          pip install uvicorn
+          uvicorn main:app --host 127.0.0.1 --port 8000 --lifespan off &
+          sleep 5
+          curl -s http://127.0.0.1:8000/health
+
+      # 7️⃣ Trigger Render Deploy (only on main branch)
+      - name: Deploy to Render
+        if: github.ref == 'refs/heads/main'
+        run: |
+          curl -X POST ${{ secrets.CI_CD_bird_classifier }}
